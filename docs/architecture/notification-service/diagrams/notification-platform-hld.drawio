@@ -1,0 +1,417 @@
+<mxfile host="65bd71144e">
+    <diagram id="notification-platform-v1" name="v1 - Current design">
+        <mxGraphModel dx="3395" dy="1336" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1200" math="0" shadow="0">
+            <root>
+                <mxCell id="v1-0"/>
+                <mxCell id="v1-1" parent="v1-0"/>
+                <mxCell id="v1-title" parent="v1-1" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=22;" value="&lt;b&gt;Notification Platform - v1 Current design&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="36" width="900" x="-110" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-subtitle" parent="v1-1" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontColor=#475569;" value="Reflects high-level-design.md (revision 27, decisions D-01 to D-65). Topic names are not yet defined. Solid = synchronous call; dashed = asynchronous / message." vertex="1">
+                    <mxGeometry height="24" width="1500" x="-110" y="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-integrations" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;dashed=1;" value="Integrations&lt;br&gt;(tenant backend services)" vertex="1">
+                    <mxGeometry height="70" width="160" x="-110" y="265" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-admins" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;dashed=1;" value="Administrators" vertex="1">
+                    <mxGeometry height="60" width="160" x="-110" y="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-api-group" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1d4ed8;dashed=1;verticalAlign=top;align=left;spacingLeft=8;fontStyle=1;fontColor=#1d4ed8;" value="1. API / Gateway" vertex="1">
+                    <mxGeometry height="330" width="240" x="210" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-api-int" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#0f172a;fontStyle=1;" value="Integration API&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;API key, idempotency key,&lt;br&gt;provider pre-check&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="200" x="230" y="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-api-relay" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#0f172a;fontStyle=1;fontStyle=0;" value="Outbox relay" vertex="1">
+                    <mxGeometry height="40" width="200" x="230" y="365" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-api-admin" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#0f172a;fontStyle=1;" value="Admin API&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;separate listener,&lt;br&gt;admin API key&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="200" x="230" y="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-api-db" parent="v1-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#dcfce7;strokeColor=#15803d;fontColor=#0f172a;" value="API DB&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;requests (encrypted), idempotency keys,&lt;br&gt;outbox, integration registry,&lt;br&gt;routing config&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="100" width="220" x="220" y="660" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-redis" parent="v1-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#fee2e2;strokeColor=#b91c1c;fontColor=#0f172a;" value="Redis&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;routing config cache&lt;br&gt;(DB is source of truth)&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="170" x="500" y="760" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-t-email" parent="v1-1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#0f172a;" value="Kafka: email dispatch" vertex="1">
+                    <mxGeometry height="60" width="200" x="490" y="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-t-sms" parent="v1-1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#0f172a;" value="Kafka: SMS dispatch" vertex="1">
+                    <mxGeometry height="60" width="200" x="490" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-t-push" parent="v1-1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#0f172a;" value="Kafka: push dispatch" vertex="1">
+                    <mxGeometry height="60" width="200" x="490" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-w-email" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#0f172a;fontStyle=1;" value="3. Email Worker" vertex="1">
+                    <mxGeometry height="60" width="180" x="760" y="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-w-sms" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#0f172a;fontStyle=1;" value="2. SMS Worker" vertex="1">
+                    <mxGeometry height="60" width="180" x="760" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-w-push" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#0f172a;fontStyle=1;" value="4. Push Worker" vertex="1">
+                    <mxGeometry height="60" width="180" x="760" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-w-db" parent="v1-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#dcfce7;strokeColor=#15803d;fontColor=#0f172a;" value="Worker DBs (one per worker)&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;attempt ledger + outbox&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="180" x="760" y="500" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-dlq" parent="v1-1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#0f172a;" value="DLQ per channel&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;unprocessable messages;&lt;br&gt;manual admin replay&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="70" width="200" x="980" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-t-facts" parent="v1-1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#0f172a;" value="Kafka: status facts&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;accepted + attempt outcomes&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="60" width="200" x="750" y="640" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-p-email" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;dashed=1;" value="Email provider (TBD)" vertex="1">
+                    <mxGeometry height="60" width="180" x="1110" y="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-p-sms" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;dashed=1;" value="SMS provider (TBD)" vertex="1">
+                    <mxGeometry height="60" width="180" x="1110" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-p-push" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;dashed=1;" value="Push provider (TBD)" vertex="1">
+                    <mxGeometry height="60" width="180" x="1110" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-ingress" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#0f172a;fontStyle=1;" value="5. Provider status ingress&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;(provider callbacks app)&lt;br&gt;webhook or provider queue; no polling&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="220" x="1390" y="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-ingress-db" parent="v1-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#dcfce7;strokeColor=#15803d;fontColor=#0f172a;" value="Ingress DB&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;inbound outbox&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="70" width="180" x="1470" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-t-provider" parent="v1-1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fef3c7;strokeColor=#b45309;fontColor=#0f172a;" value="Kafka: provider events" vertex="1">
+                    <mxGeometry height="60" width="200" x="1460" y="530" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-status" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#0f172a;fontStyle=1;" value="6. Delivery-status app&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;(status projector) single writer;&lt;br&gt;status query interface&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="220" x="1070" y="730" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-status-db" parent="v1-1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#dcfce7;strokeColor=#15803d;fontColor=#0f172a;" value="Status DB - system of record&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;status + history, provider-ref correlation;&lt;br&gt;no personal data&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="90" width="220" x="1070" y="860" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-secrets" parent="v1-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;dashed=1;dashed=0;" value="Secrets store&lt;br&gt;&lt;font style=&#39;font-size:10px&#39;&gt;all sensitive values (D-59);&lt;br&gt;delivered as env vars (D-46)&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="160" x="-110" y="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-note" parent="v1-1" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#fffbeb;strokeColor=#b45309;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontColor=#0f172a;" value="&lt;b&gt;Key decisions shown&lt;/b&gt;&lt;br&gt;&amp;bull; One deployment per app; one shared PostgreSQL instance, one database per app (D-37, D-45)&lt;br&gt;&amp;bull; Outbox in API, workers, and ingress (D-27, D-37, D-61); at-least-once, no exactly-once promise&lt;br&gt;&amp;bull; Routing: tenant provider per channel, else default; worker resolves at send time (D-03, D-42, D-55)&lt;br&gt;&amp;bull; Retries: 4 attempts, d&lt;sub&gt;n&lt;/sub&gt; = min(30 s, 1 s x 2&lt;sup&gt;n-1&lt;/sup&gt;), equal jitter, same provider (D-10, D-15, D-18)&lt;br&gt;&amp;bull; Statuses: PROCESSING, SENT, DELIVERED, BOUNCED, NOT DELIVERED, FAILED (D-26, D-29)&lt;br&gt;&amp;bull; Content and recipients encrypted at app level until the provider call (D-63)&lt;br&gt;&amp;bull; No identity provider for now: API keys only (D-47, D-51 to D-53)&lt;br&gt;&amp;bull; Open: timeouts (OQ-16); provider-dependent items (OQ-11, OQ-14, OQ-23)" vertex="1">
+                    <mxGeometry height="180" width="760" x="-110" y="980" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e1" edge="1" parent="v1-1" source="v1-integrations" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-api-int" value="HTTPS + API key">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e2" edge="1" parent="v1-1" source="v1-admins" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-api-admin" value="HTTPS + admin key">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e3" edge="1" parent="v1-1" source="v1-api-int" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-api-db" value="request + outbox (one tx)">
+                    <mxGeometry relative="1" x="0.5417" y="-50" as="geometry">
+                        <mxPoint as="offset"/>
+                        <Array as="points">
+                            <mxPoint x="470" y="300.0000000000001"/>
+                            <mxPoint x="470" y="710"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e4" edge="1" parent="v1-1" source="v1-api-admin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-api-db" value="registry, routing config">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e5" edge="1" parent="v1-1" source="v1-api-admin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-redis" value="write-through">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e6" edge="1" parent="v1-1" source="v1-api-int" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-redis" value="provider pre-check">
+                    <mxGeometry relative="1" y="40" as="geometry">
+                        <mxPoint as="offset"/>
+                        <Array as="points">
+                            <mxPoint x="480" y="290"/>
+                            <mxPoint x="480" y="800"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e7" edge="1" parent="v1-1" source="v1-api-db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-api-relay" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="200" y="710"/>
+                            <mxPoint x="200" y="385"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e8" edge="1" parent="v1-1" source="v1-api-relay" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-t-email" value="publish">
+                    <mxGeometry relative="1" x="-0.0483" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="460" y="370"/>
+                            <mxPoint x="460" y="150"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e9" edge="1" parent="v1-1" source="v1-api-relay" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-t-sms" value="publish">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="590" y="380"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e10" edge="1" parent="v1-1" source="v1-api-relay" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-t-push" value="publish">
+                    <mxGeometry relative="1" x="-0.0364" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="460" y="390"/>
+                            <mxPoint x="460" y="430"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e11" edge="1" parent="v1-1" source="v1-api-relay" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-t-facts" value="accepted fact">
+                    <mxGeometry relative="1" x="-0.0244" y="10" as="geometry">
+                        <mxPoint as="offset"/>
+                        <Array as="points">
+                            <mxPoint x="730" y="385"/>
+                            <mxPoint x="730" y="670"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e12" edge="1" parent="v1-1" source="v1-t-email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-w-email" value="consume">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e13" edge="1" parent="v1-1" source="v1-t-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-w-sms" value="consume">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e14" edge="1" parent="v1-1" source="v1-t-push" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-w-push" value="consume">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e15" edge="1" parent="v1-1" source="v1-w-email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-p-email" value="send (decrypt just before)">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e16" edge="1" parent="v1-1" source="v1-w-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-p-sms" value="send">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e17" edge="1" parent="v1-1" source="v1-w-push" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-p-push" value="send">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e18" edge="1" parent="v1-1" source="v1-w-push" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-w-db" value="ledger + outbox, one tx (each worker)">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e19" edge="1" parent="v1-1" source="v1-w-db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-t-facts" value="relay: attempt outcomes">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e20" edge="1" parent="v1-1" source="v1-w-email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-dlq" value="unprocessable (each worker)">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1080" y="130"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e21" edge="1" parent="v1-1" source="v1-w-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-redis" value="routing lookup (each worker)">
+                    <mxGeometry relative="1" x="0.4828" y="-40" as="geometry">
+                        <mxPoint as="offset"/>
+                        <Array as="points">
+                            <mxPoint x="700" y="310"/>
+                            <mxPoint x="700" y="800"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e22" edge="1" parent="v1-1" source="v1-p-email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-ingress" value="webhook / queue">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e23" edge="1" parent="v1-1" source="v1-p-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-ingress" value="webhook / queue">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e24" edge="1" parent="v1-1" source="v1-p-push" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-ingress" value="webhook / queue">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1200" y="370"/>
+                            <mxPoint x="1500" y="370"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e25" edge="1" parent="v1-1" source="v1-ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-ingress-db" value="event + outbox (one tx)">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1630" y="270"/>
+                            <mxPoint x="1630" y="355"/>
+                            <mxPoint x="1560" y="355"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e26" edge="1" parent="v1-1" source="v1-ingress-db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-t-provider" value="relay">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e27" edge="1" parent="v1-1" source="v1-t-facts" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-status" value="consume">
+                    <mxGeometry relative="1" x="-0.3333" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="v1-e28" edge="1" parent="v1-1" source="v1-t-provider" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;dashed=1;" target="v1-status" value="consume">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e29" edge="1" parent="v1-1" source="v1-status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-status-db" value="apply transition rules">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1-e30" edge="1" parent="v1-1" source="v1-api-int" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#334155;fontSize=10;" target="v1-status" value="status query (service key)">
+                    <mxGeometry relative="1" x="0.0619" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1090" y="330"/>
+                            <mxPoint x="1090" y="780"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="notification-platform-main" name="v0 - Initial proposal (superseded)">
+        <mxGraphModel dx="3649" dy="1126" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;autosize=1;fontSize=24;fontStyle=1;fontColor=#0f172a;" value="Notification Platform — fluxo de eventos" vertex="1">
+                    <mxGeometry height="42" width="850" x="30" y="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="subtitle" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;autosize=1;fontSize=12;fontColor=#475569;" value="Proposta inicial • workers escaláveis por canal • PostgreSQL como projeção de estado • confirmar garantias e quotas dos providers" vertex="1">
+                    <mxGeometry height="28" width="1250" x="31" y="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="clients" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#94a3b8;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Sistemas clientes" vertex="1">
+                    <mxGeometry height="75" width="145" x="-180" y="371.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;arcSize=12;spacing=10;" value="Notification API" vertex="1">
+                    <mxGeometry height="75" width="175" x="160" y="371" as="geometry"/>
+                </mxCell>
+                <mxCell id="topic-email" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Kafka topic&lt;br&gt;&lt;b&gt;notifications.email&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="68" width="190" x="152.5" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="topic-sms" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Kafka topic&lt;br&gt;&lt;b&gt;notifications.sms&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="68" width="190" x="433" y="375" as="geometry"/>
+                </mxCell>
+                <mxCell id="topic-push" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Kafka topic&lt;br&gt;&lt;b&gt;notifications.push&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="68" width="190" x="152.5" y="510" as="geometry"/>
+                </mxCell>
+                <mxCell id="worker-email" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Email Worker Pool" vertex="1">
+                    <mxGeometry height="68" width="170" x="720" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="worker-sms" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="SMS Worker Pool" vertex="1">
+                    <mxGeometry height="68" width="170" x="720" y="375" as="geometry"/>
+                </mxCell>
+                <mxCell id="worker-push" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Push Worker Pool" vertex="1">
+                    <mxGeometry height="68" width="170" x="720" y="510" as="geometry"/>
+                </mxCell>
+                <mxCell id="provider-email" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Email Provider&lt;br&gt;(ex.: SES)" vertex="1">
+                    <mxGeometry height="68" width="175" x="1280" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="provider-sms" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="SMS Provider&lt;br&gt;(ex.: Twilio)" vertex="1">
+                    <mxGeometry height="68" width="175" x="1280" y="375" as="geometry"/>
+                </mxCell>
+                <mxCell id="provider-push" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Push Provider&lt;br&gt;(ex.: FCM/APNs)" vertex="1">
+                    <mxGeometry height="68" width="175" x="1280" y="510" as="geometry"/>
+                </mxCell>
+                <mxCell id="dlq" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Retry / DLQ por canal&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;após política de tentativas&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="70" width="190" x="930" y="88" as="geometry"/>
+                </mxCell>
+                <mxCell id="delivery-events" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Kafka topic&lt;br&gt;&lt;b&gt;delivery-events&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="68" width="190" x="850" y="637" as="geometry"/>
+                </mxCell>
+                <mxCell id="projector" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;arcSize=12;spacing=10;" value="Status Projector" vertex="1">
+                    <mxGeometry height="68" width="170" x="860" y="780" as="geometry"/>
+                </mxCell>
+                <mxCell id="postgres" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="PostgreSQL&lt;br&gt;estado e histórico" vertex="1">
+                    <mxGeometry height="68" width="190" x="1080" y="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="callback" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;arcSize=12;spacing=10;" value="Callback / Webhook Ingress" vertex="1">
+                    <mxGeometry height="70" width="200" x="1470" y="635" as="geometry"/>
+                </mxCell>
+                <mxCell id="provider-events" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;arcSize=10;spacing=8;" value="Kafka topic&lt;br&gt;&lt;b&gt;provider-events&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="68" width="200" x="1260" y="880" as="geometry"/>
+                </mxCell>
+                <mxCell id="note" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;spacing=10;" value="Premissas a validar:&lt;br&gt;• Idempotência de ponta a ponta não é garantida pelo Kafka sozinho.&lt;br&gt;• Provider accepted ≠ delivered.&lt;br&gt;• Outbox pode ser necessária se SQL e publicação forem uma operação lógica." vertex="1">
+                    <mxGeometry height="110" width="640" x="40" y="880" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-client-api" edge="1" parent="1" source="clients" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="api" value="HTTPS / request">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-api-email" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="topic-email" value="publica pedido">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-api-sms" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="topic-sms" value="publica pedido">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-api-push" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="topic-push" value="publica pedido">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-email-worker" edge="1" parent="1" source="topic-email" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="worker-email" value="consumer group">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-sms-worker" edge="1" parent="1" source="topic-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="worker-sms" value="consumer group">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-push-worker" edge="1" parent="1" source="topic-push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="worker-push" value="consumer group">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-email-provider" edge="1" parent="1" source="worker-email" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="provider-email" value="send request">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-sms-provider" edge="1" parent="1" source="worker-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="provider-sms" value="send request">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-push-provider" edge="1" parent="1" source="worker-push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="provider-push" value="send request">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-worker-email-events" edge="1" parent="1" source="worker-email" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="delivery-events" value="resultado da tentativa">
+                    <mxGeometry relative="1" x="-0.4279" as="geometry">
+                        <mxPoint as="offset"/>
+                        <Array as="points">
+                            <mxPoint x="945" y="290"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-worker-sms-events" edge="1" parent="1" source="worker-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="delivery-events" value="resultado da tentativa">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="945" y="409"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-worker-push-events" edge="1" parent="1" source="worker-push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="delivery-events" value="resultado da tentativa">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-email-dlq" edge="1" parent="1" source="worker-email" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;" target="dlq" value="falha terminal">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1025" y="260"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-sms-dlq" edge="1" parent="1" source="worker-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;" target="dlq" value="falha terminal">
+                    <mxGeometry relative="1" x="0.0082" as="geometry">
+                        <mxPoint as="offset"/>
+                        <Array as="points">
+                            <mxPoint x="1025" y="390"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-push-dlq" edge="1" parent="1" source="worker-push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;" target="dlq" value="falha terminal">
+                    <mxGeometry relative="1" x="-0.1913" as="geometry">
+                        <mxPoint as="offset"/>
+                        <Array as="points">
+                            <mxPoint x="1025" y="530"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-provider-email-callback" edge="1" parent="1" source="provider-email" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;" target="callback" value="webhook">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-provider-sms-callback" edge="1" parent="1" source="provider-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;" target="callback" value="webhook">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-provider-push-callback" edge="1" parent="1" source="provider-push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;" target="callback" value="webhook">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-callback-events" edge="1" parent="1" source="callback" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="provider-events" value="evento validado">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-events-projector" edge="1" parent="1" source="delivery-events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="projector" value="consume">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-provider-projector" edge="1" parent="1" source="provider-events" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="projector" value="consume">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-projector-db" edge="1" parent="1" source="projector" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#64748b;strokeWidth=2;fontSize=11;labelBackgroundColor=#ffffff;" target="postgres" value="atualiza projeção">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="v0-superseded-banner" parent="1" vertex="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#b91c1c;" value="SUPERSEDED - initial proposal kept for traceability. See page &#39;v1 - Current design&#39; and docs/architecture/notification-service/high-level-design.md.">
+                    <mxGeometry x="31" y="-20" width="1250" height="28" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
