@@ -17,8 +17,8 @@ This repository contains a NestJS monorepo for a multi-channel notification plat
 - **Apache Kafka** is the initial message broker.
 - **PostgreSQL** is the initial database: one shared instance, with a separate database per application.
 - **Redis** caches routing configuration. The database remains its source of truth.
-- No notification provider has been selected yet.
-- Provider routing selects the provider configured for the tenant (the customer) per channel, otherwise a platform-wide default per channel (not yet defined). There is no automatic failover or fallback.
+- The first providers are Amazon SES for email, hosted textbee.dev for SMS, and the OneSignal Free tier for push (D-70, ADR-0014).
+- Provider routing selects the provider configured for the tenant (the customer) per channel, otherwise a platform-wide default per channel, which is that channel's selected provider (D-71). There is no automatic failover or fallback.
 - Integrations authenticate with platform-issued API keys. There is no identity provider for now; OIDC/OAuth 2.0 is the deferred target design.
 - The written HLD is at `docs/architecture/notification-service/high-level-design.md`. Confirmed decisions are listed in `docs/architecture/notification-service/architecture-context.md` §8 and in HLD §2.3.
 - ADRs live in `docs/architecture/notification-service/decisions/`. Their convention and index are in its `README.md` (convention Confirmed 2026-10-27). Check the index before making architectural changes.

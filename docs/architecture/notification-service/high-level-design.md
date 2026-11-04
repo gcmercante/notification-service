@@ -1,6 +1,6 @@
 # Notification Platform — High-Level Design
 
-> **Status:** Draft for review, revision 31 (2026-11-02): ADR-0001 to ADR-0013 accepted; D-68 and D-69. Revision 30: consistency clean-up after the ADR review; D-66 and D-67; OQ-51 to OQ-58; FC-32 and FC-33 (Proposed). Revision 29 added ADR links in §2.3 and §13 and fitness-check IDs in §14. Nothing in this document is approved unless it is labelled **Confirmed**. Confirmed decisions are listed in the [decision log](#23-decision-log).
+> **Status:** Draft for review, revision 34 (2026-11-04): ADR-0015 accepted. Revision 33: ADR-0014 accepted; D-71, D-72; OQ-59 and OQ-60 resolved; I-24 resolved. Revision 32: D-70 (first providers selected). Revision 31 (2026-11-02): ADR-0001 to ADR-0013 accepted; D-68 and D-69. Revision 30: consistency clean-up after the ADR review; D-66 and D-67; OQ-51 to OQ-58; FC-32 and FC-33 (Proposed). Revision 29 added ADR links in §2.3 and §13 and fitness-check IDs in §14. Nothing in this document is approved unless it is labelled **Confirmed**. Confirmed decisions are listed in the [decision log](#23-decision-log).
 > **Inputs:** [`CLAUDE.md`](../../../CLAUDE.md), [`architecture-context.md`](architecture-context.md), [`diagrams/notification-platform-hld.drawio`](diagrams/notification-platform-hld.drawio) (initial proposal), repository state as of 2026-10-22, project-owner decisions of 2026-10-22.
 > **Decision owner:** The project owner approves architecture decisions (**Confirmed**, 2026-10-22).
 
@@ -39,7 +39,7 @@ Identifiers: constraints `C-nn`, proposals `P-nn`, assumptions `A-nn`, open ques
 ### 1.3 Explicit non-goals of this HLD
 
 - No class designs, payload schemas, topic/queue naming conventions, table schemas, or endpoint definitions. These belong in the follow-up artifacts listed in [§13](#13-follow-up-artifacts).
-- No provider selection and no provider-specific API design (**Confirmed**: no provider has been selected).
+- No provider-specific API design. The first providers are selected (**Confirmed**, D-70); their integration details belong in the feature specs under `.specs/`.
 - No deployment topology, SLO, capacity, or compliance targets (**Confirmed**: not established).
 - No implementation plan or task breakdown.
 
@@ -62,7 +62,7 @@ The following capabilities are *not* assumed. They are listed so that their abse
 | C-01 | NestJS monorepo, initially six applications. | `CLAUDE.md`, context §1–2 |
 | C-02 | Kafka is the initial broker. RabbitMQ or AWS SQS adapters must be feasible without rewriting notification business rules. Zero-cost substitution is **not** promised. | context §3, §4.1 |
 | C-03 | PostgreSQL is the initial database. Alternative SQL or NoSQL stores (including MongoDB) must be evaluable. Zero-cost substitution is **not** promised. | context §3, §4.3 |
-| C-04 | No providers have been selected. Providers must be addable and replaceable without scattering vendor logic. | context §4.2 |
+| C-04 | The first providers are selected (D-70). Providers must be addable and replaceable without scattering vendor logic. | context §4.2, Decision log D-70 |
 | C-05 | Provider routing must be able to select a provider based on the client/customer. Failover, fallback, weighted, cost-based, and availability-based routing are **not** assumed. The base policy is now defined by C-12 and C-13. | context §4.2 |
 | C-06 | Abstractions must be built around needed capabilities, not hypothetical ones. | context §4.4 |
 | C-07 | There must be exactly one source of truth for delivery status, with ownership and transition rules defined before implementation. | `CLAUDE.md` |
@@ -71,7 +71,7 @@ The following capabilities are *not* assumed. They are listed so that their abse
 | C-10 | The project owner is the architecture decision owner and approver. | Decision log D-01 |
 | C-11 | OpenID Connect (OIDC) for user identity, OAuth 2.0 for delegated access and service-to-service access, NestJS guards for enforcement. Deferred until an IdP exists (D-47); integrations use API keys now. | Decision log D-02 |
 | C-12 | Once the client is identified, routing selects the provider configured for that client, stored in the platform database. | Decision log D-03 |
-| C-13 | If the client has no configured provider, a default provider is used. The default provider is not yet defined. | Decision log D-03 |
+| C-13 | If the client has no configured provider, a default provider is used. The defaults are the D-70 providers (D-71). | Decision log D-03, D-71 |
 | C-14 | Provider credentials are owned by the platform only. Clients hold credentials to access the platform and nothing else. | Decision log D-04 |
 | C-15 | One OAuth client per independently managed customer integration. The platform backend controls the integration-to-tenant mapping. Scopes are least-privilege. Tenant identifiers supplied by callers are never trusted. | Decision log D-05 |
 | C-16 | Routing configuration is managed through administrative endpoints, so that a back-office can be built on them later. | Decision log D-06 |
@@ -130,6 +130,8 @@ The following capabilities are *not* assumed. They are listed so that their abse
 | C-69 | Content and recipient data are encrypted at application level from acceptance until the worker's provider call. | Decision log D-63 |
 | C-70 | API keys are generated by the platform and shown once, stored as peppered hashes, sent only in headers, scoped to one integration (or the administrative surface), rotated with an overlap period, and never logged; a non-secret prefix identifies them. | Decision log D-64 |
 | C-71 | The fitness checks in §14 (FC-01 to FC-26, D-65; FC-27 to FC-31, D-66; FC-32 and FC-33, D-69; FC-09 as redefined by D-67) are built together with the features they protect. | Decision log D-65, D-66, D-67, D-69 |
+| C-72 | The D-70 providers are also the platform-wide default per channel. | Decision log D-71 |
+| C-73 | OneSignal events are authenticated by a static header secret, for now. The mechanism must be replaceable at any time, with changes confined to that provider's adapter and configuration. | Decision log D-72 |
 
 ### 2.2 Quality characteristics, as scenarios
 
@@ -154,7 +156,7 @@ QS-04 and QS-05 pull against simplicity (C-06), and QS-03 pulls against throughp
 
 ### 2.3 Decision log
 
-Confirmed by the project owner on 2026-10-22: D-01 to D-04 during review of revision 1, D-05 to D-07 during review of revision 2, D-08 to D-13 during review of revision 3, D-14 and D-15 during review of revision 4, D-16 and D-17 (and the clarification of D-14) during review of revision 5, D-18 to D-20 during review of revision 6, D-21 and D-22 during review of revision 7, D-23 to D-25 during review of revision 8, D-26 to D-28 during review of revision 9, D-29 and D-30 during review of revision 10, D-31 and D-32 during review of revision 11, D-33 during review of revision 12, D-34 to D-40 during review of revision 13, D-41 to D-48 during review of revision 14, D-49 and D-50 during review of revision 15, D-51 to D-53 during review of revision 16, D-54 to D-56 during review of revision 17, D-57 to D-65 during the item-by-item review of revision 18. D-66 to D-69 were confirmed on 2026-11-02, during the review of the ADRs; the owner accepted ADR-0001 to ADR-0013 the same day. Timeouts (OQ-16) were explicitly deferred by the owner. Each decision is recorded in exactly one ADR, linked in the ADR column; the convention is in [`decisions/README.md`](decisions/README.md) (Confirmed 2026-10-27).
+Confirmed by the project owner on 2026-10-22: D-01 to D-04 during review of revision 1, D-05 to D-07 during review of revision 2, D-08 to D-13 during review of revision 3, D-14 and D-15 during review of revision 4, D-16 and D-17 (and the clarification of D-14) during review of revision 5, D-18 to D-20 during review of revision 6, D-21 and D-22 during review of revision 7, D-23 to D-25 during review of revision 8, D-26 to D-28 during review of revision 9, D-29 and D-30 during review of revision 10, D-31 and D-32 during review of revision 11, D-33 during review of revision 12, D-34 to D-40 during review of revision 13, D-41 to D-48 during review of revision 14, D-49 and D-50 during review of revision 15, D-51 to D-53 during review of revision 16, D-54 to D-56 during review of revision 17, D-57 to D-65 during the item-by-item review of revision 18. D-66 to D-69 were confirmed on 2026-11-02, during the review of the ADRs; the owner accepted ADR-0001 to ADR-0013 the same day. D-70 to D-72 were confirmed on 2026-11-04, during implementation planning. Timeouts (OQ-16) were explicitly deferred by the owner. Each decision is recorded in exactly one ADR, linked in the ADR column; the convention is in [`decisions/README.md`](decisions/README.md) (Confirmed 2026-10-27).
 
 | ID | Decision | Resolves | New questions it raises | ADR |
 |---|---|---|---|---|
@@ -227,6 +229,9 @@ Confirmed by the project owner on 2026-10-22: D-01 to D-04 during review of revi
 | D-67 | FC-09 is redefined around D-40: a notification that stays in `PROCESSING` for more than 5 minutes must raise an alert. A notification at `SENT` with no further provider report is not stuck (D-25) and raises no alert. | FC-09 conflict with D-25 | — | [ADR-0004](decisions/0004-retry-failed-sends-with-capped-backoff-and-manual-dlq-replay.md) |
 | D-68 | Correlation race handled as in ADR-0013: unmatched provider events are parked durably by the Delivery-status app, applied when the attempt outcome establishes the correlation, and alerted on (without a status change) if still unmatched after a bounded period. | §5.3 correlation race; I-07 | OQ-57, OQ-58 | [ADR-0013](decisions/0013-correlate-early-provider-reports-with-attempt-outcomes.md) |
 | D-69 | Fitness checks FC-32 and FC-33 approved, to be built together with the features they protect (as D-65, D-66). | §14 (rows added in revision 30) | — | [ADR-0012](decisions/0012-govern-architecture-through-owner-approval-and-fitness-checks.md) (amendment) |
+| D-70 | First provider per channel: Amazon SES for email, hosted textbee.dev for SMS, the OneSignal Free tier for push. | C-04 (selection) | OQ-59, OQ-60 | [ADR-0014](decisions/0014-select-first-provider-per-channel.md) |
+| D-71 | The D-70 providers are also the platform-wide default per channel. | OQ-59 | — | [ADR-0015](decisions/0015-use-selected-providers-as-defaults-and-replaceable-onesignal-authentication.md) |
+| D-72 | OneSignal events are authenticated by a static secret in a custom header, for now. The service must be ready for this to change at any time. | OQ-60 | — | [ADR-0015](decisions/0015-use-selected-providers-as-defaults-and-replaceable-onesignal-authentication.md) |
 
 ### 2.4 Terms
 
@@ -322,7 +327,7 @@ The repository layout and monorepo tooling are not decided here. The current rep
 **Confirmed (C-12, C-13, C-14):**
 
 - Once the client is identified, the platform routes to the provider configured for that client in its database.
-- If the client has no configured provider, a default provider is used. The default is not yet defined.
+- If the client has no configured provider, a default provider is used. The default per channel is that channel's selected provider (D-71).
 - All provider accounts and credentials belong to the platform.
 
 **Confirmed (D-42; formerly assumptions A-01 to A-03):**
@@ -966,7 +971,7 @@ Consequences and proposals:
 
 - **Correlation:** a platform notification ID, the tenant and integration IDs, and a caller-supplied reference (if any) on every message, log entry, and status record. Never log tokens, token claims beyond identifiers, or provider secrets.
 - **Security signals:** token validation failures by reason, authorization denials, routing-configuration changes (audit log), and secrets-access anomalies.
-- **Routing signals:** per channel, the share of sends routed by client configuration versus the default. This makes it visible how much traffic depends on the still-undefined default (C-13). Trace context propagates through broker-neutral message metadata (§4.4).
+- **Routing signals:** per channel, the share of sends routed by client configuration versus the default. This makes it visible how much traffic depends on the default (C-13). Trace context propagates through broker-neutral message metadata (§4.4).
 - **Logging:** no message content, recipient addresses, tokens, or credentials (C-09). Use identifiers and categories instead. Redaction lives in the shared logging layer, not per call site.
 - **Status freshness (D-19):** time from acceptance until status is visible, and time from a provider's callback until the status update. Both are measured end to end with timestamps on the facts and treated as primary indicators. Targets are deferred until real load is known (D-34).
 - **Metrics:** acceptance rate and rejection reasons; per-channel and per-provider attempt outcomes and latency; consumer lag per topic/consumer group; outbox backlog; retry and DLQ depth; callback verification failures; unmatched-callback count; stuck-notification count; per-provider inbound health by mechanism (webhook rate, provider-queue consumer lag); per provider, the share of notifications that never get past `SENT` (input for the future polling feature, D-24). Per-client labels risk high metric cardinality, so per-client views may belong in logs or analytics instead.
@@ -1055,6 +1060,8 @@ Questions marked **(blocking)** must be answered before the related design can b
 | OQ-25 | D-50: delegated access is not needed for now. |
 | OQ-50 | D-51 to D-53: "API key" and "token" mean the same thing; administrator API keys valid only on the administrative surface; a service key per caller plus a network restriction for internal calls. |
 | OQ-20 | D-28 (authentication options, tenant binding, an explicit revocation maximum, short-lived JWTs) and D-47 (no IdP for now; API keys). The IdP product is now [OQ-52](#112-still-open). |
+| OQ-59 | D-71: the D-70 providers are also the platform-wide defaults. |
+| OQ-60 | D-72: a static header secret is accepted for now, and the mechanism must stay replaceable. |
 
 ### 11.2 Still open
 
@@ -1104,6 +1111,7 @@ Discovered during analysis. Per project rules, these are reported, not silently 
 | I-17 | D-03 and C-05 say "client", while D-05 distinguishes tenant and integration. `CLAUDE.md` still uses "client/customer". | Terminology | **Resolved:** `CLAUDE.md` now says tenant. |
 | I-18 | The diagram shows "Sistemas clientes" (client systems), which matches D-14. It does not show the IdP, the integration registry, administrators, or the separated administrative surface (D-12). | Diagram | **Resolved in diagram v1:** administrators, the admin API, and the registry are shown. There is no IdP to show (D-47). |
 | I-19 | ~~D-13 and D-14 appeared to conflict.~~ **Resolved by the owner's clarification:** the platform does not care whether a client is backend or frontend, and treats every integration as a backend service. | Decision log | Resolved. |
+| I-24 | Diagram v1 labelled the three providers "(TBD)", although D-70 selects them. §3.1 describes the v0 page, whose names remain illustrative. | Diagram v1 provider nodes | **Resolved in diagram v1:** the provider nodes now name the D-70 providers. |
 
 ---
 

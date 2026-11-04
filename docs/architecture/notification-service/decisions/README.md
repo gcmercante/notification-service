@@ -261,3 +261,5 @@ When the grouping was proposed (2026-10-27), these confirmed decisions had no ma
 | [ADR-0011](0011-protect-personal-data-with-encryption-and-bounded-retention.md) | Protect personal data with application-level encryption and bounded retention | Accepted | D-38, D-62, D-63 | 2026-11-02 |
 | [ADR-0012](0012-govern-architecture-through-owner-approval-and-fitness-checks.md) | Govern architecture through the project owner and approved fitness checks | Accepted | D-01, D-34, D-65, D-66; D-69 (amendment) | 2026-11-02 |
 | [ADR-0013](0013-correlate-early-provider-reports-with-attempt-outcomes.md) | Correlate provider status reports that arrive before the attempt outcome | Accepted | D-68 | 2026-11-02 |
+| [ADR-0014](0014-select-first-provider-per-channel.md) | Select the first provider per channel | Accepted | D-70 | 2026-11-04 |
+| [ADR-0015](0015-use-selected-providers-as-defaults-and-replaceable-onesignal-authentication.md) | Use the selected providers as defaults and keep OneSignal event authentication replaceable | Accepted | D-71, D-72 | 2026-11-04 |
