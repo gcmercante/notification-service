@@ -16,8 +16,8 @@
 - **Phase / Task**: Specs approved for all ten features. `platform-foundation` design and tasks approved. The owner said not to start implementation.
 - **Completed**: none (no implementation started)
 - **In-progress** (file:line): none
-- **Atlassian**: Jira project NTS holds all 75 issues (NTS-5 to NTS-79). Confluence space NTS has parent pages Architecture (917506) and Architecture Decision Records (950273), holding ADR-0001 to ADR-0015, the architecture context and the HLD, published from `main` by `scripts/publish_confluence.py`. The HLD's four Mermaid diagrams use the Mermaid app by Narva Software. The `.drawio` file is attached to the HLD page (491522) and linked. The page shows the diagram as an image once a PNG export is committed as `diagrams/notification-platform-hld.png`.
-- **Next step**: The owner approved showing the diagram on the page. Add the PNG export of page "v1 - Current design", merge it, then publish again. Execute starts at T1 only when the owner says so.
+- **Atlassian**: Jira project NTS holds all 75 issues (NTS-5 to NTS-79). Confluence space NTS has parent pages Architecture (917506) and Architecture Decision Records (950273), holding ADR-0001 to ADR-0015, the architecture context and the HLD, published by `scripts/publish_confluence.py`, which `.github/workflows/publish-confluence.yml` runs on each push to `main` that changes these documents, the script or the workflow. The workflow needs the repository secrets `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN`. The HLD's four Mermaid diagrams use the Mermaid app by Narva Software. The `.drawio` file is attached to the HLD page (491522) and linked. The page shows the diagram as an image once a PNG export is committed as `diagrams/notification-platform-hld.png`.
+- **Next step**: The owner approved showing the diagram on the page. Add the PNG export of page "v1 - Current design", and merge it. The merge publishes it. Execute starts at T1 only when the owner says so.
 - **Blockers**: Docker is not enabled in this WSL distro, and integration gates need PostgreSQL, Kafka and Redis.
 - **Uncommitted files**: the starter scaffold (`package.json`, `src/`, `test/` and config files are untracked; T1 commits them)
-- **Branch**: docs/confluence-publishing
+- **Branch**: ci/publish-confluence-on-merge
