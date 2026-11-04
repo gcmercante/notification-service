@@ -7,6 +7,12 @@ on:
       - docs/architecture/notification-service/**
       - scripts/publish_confluence.py
       - .github/workflows/publish-confluence.yml
+  workflow_dispatch:
+    inputs:
+      overwrite_manual_edits:
+        description: Replace pages edited in Confluence with the repository's version
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -24,7 +30,8 @@ jobs:
         with:
           persist-credentials: false
       - name: Publish
-        run: python3 scripts/publish_confluence.py publish --rev "$GITHUB_SHA"
+        run: python3 scripts/publish_confluence.py publish --rev "$GITHUB_SHA" ${OVERWRITE:+--overwrite-manual-edits}
         env:
           CONFLUENCE_EMAIL: ${{ secrets.CONFLUENCE_EMAIL }}
           CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          OVERWRITE: ${{ inputs.overwrite_manual_edits && 'true' || '' }}

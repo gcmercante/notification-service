@@ -5,13 +5,17 @@ GitHub is the source of truth, so the text is read from a git revision (origin/m
 default), never from the working tree. Publishing is safe to repeat: pages are found by
 title, and a page whose content has not changed is skipped.
 
+A page edited in Confluence since its last publish is not overwritten: it is reported and the
+command fails once the other pages are done. Copy the edit to the repository, or to this script
+if it is about page layout, then publish with --overwrite-manual-edits.
+
 Commands:
   dry-run   Convert and validate every document, and write the output to --out. No network.
   check     Confirm the credentials, the space and the two parent pages.
   publish   Create or update the pages, and attach the Draw.io diagram.
 
-Mermaid diagrams use the Mermaid app by Narva Software, which must be installed on the site.
-The page shows the Draw.io diagram only if its PNG export is committed next to the .drawio file.
+Mermaid and Draw.io diagrams use the Mermaid app by Narva Software and the draw.io app, which
+must be installed on the site.
 
 Credentials come from CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN, or from the file
 ~/.config/notification-service/confluence.env, which must be readable only by its owner.
@@ -47,11 +51,16 @@ DIAGRAM = f"{BASE}/diagrams/notification-platform-hld.drawio"
 HLD = f"{BASE}/high-level-design.md"
 GITHUB = "https://github.com/gcmercante/notification-service/blob"
 CREDENTIALS_FILE = pathlib.Path.home() / ".config/notification-service/confluence.env"
-DIAGRAM_PNG = DIAGRAM.removesuffix(".drawio") + ".png"
+HLD_PAGE_ID = "491522"
 REV_PLACEHOLDER = "@@REV@@"
 
 # Forge macro of the Mermaid app, copied from a diagram inserted with the Confluence editor.
 MERMAID_EXTENSION = "336440d6-2d95-4275-833f-6351e86634e3/e5743d37-53d6-4daa-a3a1-acca68790e69/static/mermaid-diagram"
+# Forge macro of the draw.io app, also copied from the editor. It shows the app's own copy of the
+# diagram, attached to the HLD page. Publishing does not update that copy or its preview, so a
+# change to the .drawio file in the repository appears only after the macro's diagram is replaced.
+DRAWIO_EXTENSION = "1afdce52-d22e-4d27-84db-5be989c3c83b/92d899e8-452f-4c9b-9f60-823ab11c8253/static/drawio"
+DRAWIO_COPY = "notification-platform-hld1.drawio"
 # Languages the Confluence code macro highlights. Anything else is sent without one.
 CODE_LANGUAGES = {"bash", "java", "javascript", "json", "powershell", "python", "sql", "typescript", "xml", "yaml"}
 
@@ -135,28 +144,54 @@ def code_macro(code, lang):
     return f'<ac:structured-macro ac:name="code">{language}<ac:plain-text-body>{cdata(code)}</ac:plain-text-body></ac:structured-macro>'
 
 
-def mermaid_macro(code):
+def forge_macro(extension, title, identity, guest_params):
     # Forge macros are stored as ADF, with the same node repeated as the fallback. The id is
-    # derived from the code so that unchanged diagrams keep the page's digest stable.
-    local_id = str(uuid.uuid5(uuid.NAMESPACE_URL, code))
+    # derived from the content so that unchanged diagrams keep the page's digest stable.
+    local_id = str(uuid.uuid5(uuid.NAMESPACE_URL, identity))
     node = (
         '<ac:adf-node type="extension">'
-        f'<ac:adf-attribute key="extension-key">{MERMAID_EXTENSION}</ac:adf-attribute>'
+        f'<ac:adf-attribute key="extension-key">{extension}</ac:adf-attribute>'
         '<ac:adf-attribute key="extension-type">com.atlassian.ecosystem</ac:adf-attribute>'
         '<ac:adf-attribute key="parameters">'
         f'<ac:adf-parameter key="local-id">{local_id}</ac:adf-parameter>'
-        f'<ac:adf-parameter key="extension-id">ari:cloud:ecosystem::extension/{MERMAID_EXTENSION}</ac:adf-parameter>'
-        '<ac:adf-parameter key="extension-title">Mermaid Diagram</ac:adf-parameter>'
+        f'<ac:adf-parameter key="extension-id">ari:cloud:ecosystem::extension/{extension}</ac:adf-parameter>'
+        f'<ac:adf-parameter key="extension-title">{title}</ac:adf-parameter>'
         '<ac:adf-parameter key="layout">extension</ac:adf-parameter>'
         '<ac:adf-parameter key="forge-environment">PRODUCTION</ac:adf-parameter>'
-        f'<ac:adf-parameter key="guest-params"><ac:adf-parameter key="code">{html.escape(code)}</ac:adf-parameter></ac:adf-parameter>'
+        f'<ac:adf-parameter key="guest-params">{guest_params}</ac:adf-parameter>'
         "</ac:adf-attribute>"
-        '<ac:adf-attribute key="text">Mermaid Diagram</ac:adf-attribute>'
+        f'<ac:adf-attribute key="text">{title}</ac:adf-attribute>'
         '<ac:adf-attribute key="layout">default</ac:adf-attribute>'
         f'<ac:adf-attribute key="local-id">{local_id}</ac:adf-attribute>'
         "</ac:adf-node>"
     )
     return f"<ac:adf-extension>{node}<ac:adf-fallback>{node}</ac:adf-fallback></ac:adf-extension>"
+
+
+def mermaid_macro(code):
+    return forge_macro(MERMAID_EXTENSION, "Mermaid Diagram", code, f'<ac:adf-parameter key="code">{html.escape(code)}</ac:adf-parameter>')
+
+
+def drawio_macro():
+    guest_params = (
+        f'<ac:adf-parameter key="diagram-name">{DRAWIO_COPY}</ac:adf-parameter>'
+        f'<ac:adf-parameter key="diagram-display-name">{DRAWIO_COPY}</ac:adf-parameter>'
+        '<ac:adf-parameter key="revision" type="integer">1</ac:adf-parameter>'
+        f'<ac:adf-parameter key="page-id">{HLD_PAGE_ID}</ac:adf-parameter>'
+        '<ac:adf-parameter key="width" type="double">1787.0000000000002</ac:adf-parameter>'
+        '<ac:adf-parameter key="height" type="double">1160.5</ac:adf-parameter>'
+        '<ac:adf-parameter key="tbstyle" />'
+        '<ac:adf-parameter key="links" />'
+        '<ac:adf-parameter key="simple" type="boolean">false</ac:adf-parameter>'
+        '<ac:adf-parameter key="lbox" type="boolean">true</ac:adf-parameter>'
+        '<ac:adf-parameter key="zoom" type="integer">100</ac:adf-parameter>'
+        '<ac:adf-parameter key="p-center" type="boolean">false</ac:adf-parameter>'
+    )
+    return forge_macro(DRAWIO_EXTENSION, "draw.io Diagram", DRAWIO_COPY, guest_params)
+
+
+def toc_macro():
+    return '<ac:structured-macro ac:name="toc"><ac:parameter ac:name="style">none</ac:parameter></ac:structured-macro>'
 
 
 def convert(markdown, src_dir):
@@ -228,11 +263,8 @@ def banner(path):
     )
 
 
-def diagram_section(has_png):
-    name = posixpath.basename(DIAGRAM)
-    link = f'<ac:link><ri:attachment ri:filename="{name}" /><ac:plain-text-link-body>{cdata(name)}</ac:plain-text-link-body></ac:link>'
-    image = f'<ac:image><ri:attachment ri:filename="{posixpath.basename(DIAGRAM_PNG)}" /></ac:image>' if has_png else ""
-    return f"<h2>Architecture diagram</h2>{image}<p>The editable diagram is attached to this page: {link}. Open it with draw.io.</p>"
+def diagram_section():
+    return f"<h2>Architecture diagram</h2>{drawio_macro()}"
 
 
 def assert_well_formed(storage, path):
@@ -243,13 +275,13 @@ def assert_well_formed(storage, path):
         raise PublishError(f"{path} converted to invalid storage format: {error}") from error
 
 
-def build_page(markdown, path, has_png=False):
+def build_page(markdown, path):
     match = re.match(r"^# (.+)\n", markdown)
     if not match:
         raise PublishError(f"{path} does not start with a level 1 heading")
     body = convert(markdown.split("\n", 1)[1], posixpath.dirname(path))
     body = re.sub(r"(<td>Status</td><td>)Accepted(</td>)", rf'\g<1>{status_macro("Accepted", "Green")}\2', body)
-    storage = banner(path) + (diagram_section(has_png) if path == HLD else "") + body
+    storage = banner(path) + (toc_macro() + diagram_section() if path == HLD else "") + body
     assert_well_formed(storage, path)
     return match.group(1), storage
 
@@ -275,15 +307,10 @@ def document_paths(rev):
     return pages
 
 
-def has_png(rev):
-    return bool(git("ls-tree", "--name-only", rev, "--", DIAGRAM_PNG).strip())
-
-
 def load_pages(rev):
     pages = []
-    png = has_png(rev)
     for path, parent in document_paths(rev):
-        title, storage = build_page(git("show", f"{rev}:{path}", binary=True).decode("utf-8"), path, png)
+        title, storage = build_page(git("show", f"{rev}:{path}", binary=True).decode("utf-8"), path)
         digest = hashlib.sha256(storage.encode()).hexdigest()[:16]  # Before the revision goes in.
         pages.append({"path": path, "parent": parent, "title": title, "digest": digest, "storage": storage.replace(REV_PLACEHOLDER, rev)})
     return pages
@@ -398,6 +425,13 @@ def resolve_rev(args):
     return git("rev-parse", "--verify", f"{rev}^{{commit}}").strip()
 
 
+def edited_outside_publish(page):
+    # Every publish after a page's creation leaves a "sync" message; a later version without one
+    # came from somewhere else. A page's first version never has a message.
+    version = page.get("version") or {}
+    return version.get("number", 1) > 1 and not (version.get("message") or "").startswith("sync ")
+
+
 def cmd_dry_run(args):
     rev = resolve_rev(args)
     out = pathlib.Path(args.out)
@@ -423,13 +457,17 @@ def cmd_publish(args):
     client = Confluence(args.site, *load_credentials())
     space_id = client.space_id()
     site_url = client.site
-    counts = {"created": 0, "updated": 0, "unchanged": 0}
+    counts = {"created": 0, "updated": 0, "unchanged": 0, "blocked": 0}
+    blocked = []
     hld_id = None
     for page in pages:
         existing = client.find_page(space_id, page["title"])
         message = f"sync {page['digest']} from {rev[:7]}"
         if existing is None:
             saved, action = client.create_page(space_id, page), "created"
+        elif edited_outside_publish(existing) and not args.overwrite_manual_edits:
+            saved, action = existing, "blocked"
+            blocked.append(f"{page['title']} (version {existing['version']['number']})")
         elif page["digest"] in ((existing.get("version") or {}).get("message") or "") and existing.get("parentId") == page["parent"]:
             saved, action = existing, "unchanged"
         else:
@@ -438,12 +476,16 @@ def cmd_publish(args):
         if page["path"] == HLD:
             hld_id = saved["id"]
         print(f"{action:>9}  {saved['id']}  {page['title'][:80]}", flush=True)
-    files = [(DIAGRAM, "application/vnd.jgraph.mxfile")] + ([(DIAGRAM_PNG, "image/png")] if has_png(rev) else [])
-    for path, content_type in files:
-        name = posixpath.basename(path)
-        uploaded = client.attach(hld_id, name, git("show", f"{rev}:{path}", binary=True), content_type)
-        print(f"{'Attached' if uploaded else 'Unchanged:'} {name} on page {hld_id}")
+    name = posixpath.basename(DIAGRAM)
+    uploaded = client.attach(hld_id, name, git("show", f"{rev}:{DIAGRAM}", binary=True), "application/vnd.jgraph.mxfile")
+    print(f"{'Attached' if uploaded else 'Unchanged:'} {name} on page {hld_id}")
     print(f"Done from {rev[:7]}: {counts}. See {site_url}/wiki/spaces/{SPACE_KEY}/pages/{ARCHITECTURE_PARENT}")
+    if blocked:
+        raise PublishError(
+            "Not overwritten, because these pages were edited in Confluence since their last publish: "
+            + "; ".join(blocked)
+            + ". Copy the edits to the repository, then publish with --overwrite-manual-edits."
+        )
 
 
 def main():
@@ -451,6 +493,7 @@ def main():
     parser.add_argument("command", choices=["dry-run", "check", "publish"])
     parser.add_argument("--rev", help="git revision to publish (default: origin/main, fetched first)")
     parser.add_argument("--site", default=os.environ.get("CONFLUENCE_SITE", DEFAULT_SITE))
+    parser.add_argument("--overwrite-manual-edits", action="store_true", help="publish: replace pages edited in Confluence since their last publish")
     parser.add_argument("--out", default="confluence-dry-run", help="output directory for dry-run")
     args = parser.parse_args()
     commands = {"dry-run": cmd_dry_run, "check": cmd_check, "publish": cmd_publish}
