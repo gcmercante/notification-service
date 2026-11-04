@@ -25,7 +25,7 @@ These are high-level responsibilities only. Detailed interfaces, internal compon
 - **Initial message broker:** Apache Kafka.
 - **Initial database:** PostgreSQL.
 - **Cache:** Redis, for routing configuration (D-44). The database remains the source of truth.
-- **Notification providers:** not selected yet.
+- **Notification providers:** Amazon SES for email, hosted textbee.dev for SMS, and the OneSignal Free tier for push (D-70).
 
 ## 4. Architectural goals and constraints
 
@@ -37,7 +37,7 @@ This is not a requirement that brokers be perfectly interchangeable or that migr
 
 ### 4.2. Provider independence and client-based routing
 
-No provider has been selected for SMS, email, or push notifications. The architecture should support adding and replacing providers without spreading vendor-specific SDKs or logic throughout the core application.
+The first providers are selected (D-70). The architecture should support adding and replacing providers without spreading vendor-specific SDKs or logic throughout the core application.
 
 Provider routing must be possible based on the client/customer (the tenant, D-09) using the platform. The base routing policy is now confirmed (see §8, D-03): each client's configured provider is stored in the database, and a default provider is used when none is configured. Do not assume automatic failover, fallback providers, weighted routing, cost-based routing, or routing by availability/capability unless those requirements are agreed.
 
@@ -99,7 +99,7 @@ Do not try to settle every class, payload, event schema, provider integration, o
 
 ## 8. Confirmed decisions
 
-Confirmed by the project owner on 2026-10-22, during review of the HLD; D-66 to D-69 on 2026-11-02, during review of the ADRs. See [`high-level-design.md`](high-level-design.md) §2.3 for the follow-up questions each decision raises.
+Confirmed by the project owner on 2026-10-22, during review of the HLD; D-66 to D-69 on 2026-11-02, during review of the ADRs; D-70 to D-72 on 2026-11-04, during implementation planning. See [`high-level-design.md`](high-level-design.md) §2.3 for the follow-up questions each decision raises.
 
 | ID | Decision |
 |---|---|
@@ -172,6 +172,9 @@ Confirmed by the project owner on 2026-10-22, during review of the HLD; D-66 to 
 | D-67 | FC-09 is redefined around D-40: a notification that stays in PROCESSING for more than 5 minutes must raise an alert. A notification at SENT with no further provider report is not stuck (D-25) and raises no alert. (Confirmed 2026-11-02.) |
 | D-68 | The handling of provider status reports that arrive before the attempt outcome is approved as recorded in ADR-0013: the Delivery-status app parks unmatched provider events durably before acknowledging them, applies them through the normal transition rules when an attempt outcome establishes the correlation, and raises an alert, changing no status, for any event still unmatched after a bounded period. Parking and reconciling stay inside the Delivery-status app. The hold period, retention, and correlation-key scope remain open (OQ-57, OQ-58). (Confirmed 2026-11-02.) |
 | D-69 | Fitness checks FC-32 and FC-33 in the HLD (§14), which confirm ADR-0013 (D-68), are approved, to be built together with the features they protect, as for D-65 and D-66. (Confirmed 2026-11-02.) |
+| D-70 | The first provider per channel is Amazon SES for email, hosted textbee.dev for SMS, and the OneSignal Free tier for push. Whether they are also the platform-wide defaults, and whether OneSignal's static-header event authentication is acceptable, remain open (OQ-59, OQ-60). (Confirmed 2026-11-04.) |
+| D-71 | The D-70 providers are also the platform-wide default per channel. (Confirmed 2026-11-04.) |
+| D-72 | OneSignal events are authenticated by a static secret in a custom header, for now. The service must be ready for this to change at any time. (Confirmed 2026-11-04.) |
 
 **Clarification of D-14 (revision 5 review):** the platform does not need to care whether a client is a backend or a frontend; every integration is treated as a backend service. "We just send notifications" describes the platform's role and does not exclude status reads (D-16).
 

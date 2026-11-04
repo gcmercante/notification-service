@@ -95,6 +95,7 @@ All checks below are from HLD [§14](../high-level-design.md#14-fitness-checks-c
 
 ## Links
 
+- Refined by [ADR-0015](0015-use-selected-providers-as-defaults-and-replaceable-onesignal-authentication.md) (D-71 defines the defaults).
 - Decision log: HLD [§2.3](../high-level-design.md#23-decision-log) (D-03, D-04, D-06, D-09, D-42, D-43, D-44, D-55); [context §8](../architecture-context.md#8-confirmed-decisions). Constraints: HLD [§2.1](../high-level-design.md#21-confirmed-constraints).
 - Related to [ADR-0001](0001-structure-platform-as-choreographed-pipeline-with-ports-and-adapters.md): routing policy behind a port (D-54), per-provider-account throttling (D-58).
 - Related to [ADR-0004](0004-retry-failed-sends-with-capped-backoff-and-manual-dlq-replay.md): same-provider retries; no fallback to the default (D-07, D-10).
