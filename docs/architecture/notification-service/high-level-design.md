@@ -1,8 +1,23 @@
 # Notification Platform — High-Level Design
 
-> **Status:** Draft for review, revision 34 (2026-11-04): ADR-0015 accepted. Revision 33: ADR-0014 accepted; D-71, D-72; OQ-59 and OQ-60 resolved; I-24 resolved. Revision 32: D-70 (first providers selected). Revision 31 (2026-11-02): ADR-0001 to ADR-0013 accepted; D-68 and D-69. Revision 30: consistency clean-up after the ADR review; D-66 and D-67; OQ-51 to OQ-58; FC-32 and FC-33 (Proposed). Revision 29 added ADR links in §2.3 and §13 and fitness-check IDs in §14. Nothing in this document is approved unless it is labelled **Confirmed**. Confirmed decisions are listed in the [decision log](#23-decision-log).
-> **Inputs:** [`CLAUDE.md`](../../../CLAUDE.md), [`architecture-context.md`](architecture-context.md), [`diagrams/notification-platform-hld.drawio`](diagrams/notification-platform-hld.drawio) (initial proposal), repository state as of 2026-10-22, project-owner decisions of 2026-10-22.
-> **Decision owner:** The project owner approves architecture decisions (**Confirmed**, 2026-10-22).
+| Field | Value |
+|---|---|
+| Status | Draft for review |
+| Current revision | 34 (2026-11-04) |
+| Approval | Nothing in this document is approved unless it is labelled **Confirmed**. Confirmed decisions are listed in the [decision log](#23-decision-log). |
+| Inputs | [`CLAUDE.md`](../../../CLAUDE.md), [`architecture-context.md`](architecture-context.md), [`diagrams/notification-platform-hld.drawio`](diagrams/notification-platform-hld.drawio) (initial proposal), repository state as of 2026-10-22, project-owner decisions of 2026-10-22. |
+| Decision owner | The project owner approves architecture decisions (**Confirmed**, 2026-10-22). |
+
+**Recent revisions**
+
+| Revision | Date | Changes |
+|---|---|---|
+| 34 | 2026-11-04 | ADR-0015 accepted. |
+| 33 | — | ADR-0014 accepted; D-71, D-72; OQ-59 and OQ-60 resolved; I-24 resolved. |
+| 32 | — | D-70 (first providers selected). |
+| 31 | 2026-11-02 | ADR-0001 to ADR-0013 accepted; D-68 and D-69. |
+| 30 | — | Consistency clean-up after the ADR review; D-66 and D-67; OQ-51 to OQ-58; FC-32 and FC-33 (Proposed). |
+| 29 | — | Added ADR links in §2.3 and §13, and fitness-check IDs in §14. |
 
 ## 0. How to read this document
 
