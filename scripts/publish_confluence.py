@@ -56,11 +56,9 @@ REV_PLACEHOLDER = "@@REV@@"
 
 # Forge macro of the Mermaid app, copied from a diagram inserted with the Confluence editor.
 MERMAID_EXTENSION = "336440d6-2d95-4275-833f-6351e86634e3/e5743d37-53d6-4daa-a3a1-acca68790e69/static/mermaid-diagram"
-# Forge macro of the draw.io app, also copied from the editor. It shows the app's own copy of the
-# diagram, attached to the HLD page. Publishing does not update that copy or its preview, so a
-# change to the .drawio file in the repository appears only after the macro's diagram is replaced.
+# Forge macro of the draw.io app, also copied from the editor. It loads one version of the .drawio
+# attachment on the HLD page, so each publish uploads the diagram and sets the macro to that version.
 DRAWIO_EXTENSION = "1afdce52-d22e-4d27-84db-5be989c3c83b/92d899e8-452f-4c9b-9f60-823ab11c8253/static/drawio"
-DRAWIO_COPY = "notification-platform-hld1.drawio"
 # Languages the Confluence code macro highlights. Anything else is sent without one.
 CODE_LANGUAGES = {"bash", "java", "javascript", "json", "powershell", "python", "sql", "typescript", "xml", "yaml"}
 
@@ -172,11 +170,12 @@ def mermaid_macro(code):
     return forge_macro(MERMAID_EXTENSION, "Mermaid Diagram", code, f'<ac:adf-parameter key="code">{html.escape(code)}</ac:adf-parameter>')
 
 
-def drawio_macro():
+def drawio_macro(revision):
+    name = posixpath.basename(DIAGRAM)
     guest_params = (
-        f'<ac:adf-parameter key="diagram-name">{DRAWIO_COPY}</ac:adf-parameter>'
-        f'<ac:adf-parameter key="diagram-display-name">{DRAWIO_COPY}</ac:adf-parameter>'
-        '<ac:adf-parameter key="revision" type="integer">1</ac:adf-parameter>'
+        f'<ac:adf-parameter key="diagram-name">{name}</ac:adf-parameter>'
+        f'<ac:adf-parameter key="diagram-display-name">{name}</ac:adf-parameter>'
+        f'<ac:adf-parameter key="revision" type="integer">{revision}</ac:adf-parameter>'
         f'<ac:adf-parameter key="page-id">{HLD_PAGE_ID}</ac:adf-parameter>'
         '<ac:adf-parameter key="width" type="double">1787.0000000000002</ac:adf-parameter>'
         '<ac:adf-parameter key="height" type="double">1160.5</ac:adf-parameter>'
@@ -187,7 +186,7 @@ def drawio_macro():
         '<ac:adf-parameter key="zoom" type="integer">100</ac:adf-parameter>'
         '<ac:adf-parameter key="p-center" type="boolean">false</ac:adf-parameter>'
     )
-    return forge_macro(DRAWIO_EXTENSION, "draw.io Diagram", DRAWIO_COPY, guest_params)
+    return forge_macro(DRAWIO_EXTENSION, "draw.io Diagram", name, guest_params)
 
 
 def toc_macro():
@@ -263,8 +262,8 @@ def banner(path):
     )
 
 
-def diagram_section():
-    return f"<h2>Architecture diagram</h2>{drawio_macro()}"
+def diagram_section(diagram_revision):
+    return f"<h2>Architecture diagram</h2>{drawio_macro(diagram_revision)}"
 
 
 def assert_well_formed(storage, path):
@@ -275,13 +274,13 @@ def assert_well_formed(storage, path):
         raise PublishError(f"{path} converted to invalid storage format: {error}") from error
 
 
-def build_page(markdown, path):
+def build_page(markdown, path, diagram_revision=1):
     match = re.match(r"^# (.+)\n", markdown)
     if not match:
         raise PublishError(f"{path} does not start with a level 1 heading")
     body = convert(markdown.split("\n", 1)[1], posixpath.dirname(path))
     body = re.sub(r"(<td>Status</td><td>)Accepted(</td>)", rf'\g<1>{status_macro("Accepted", "Green")}\2', body)
-    storage = banner(path) + (toc_macro() + diagram_section() if path == HLD else "") + body
+    storage = banner(path) + (toc_macro() + diagram_section(diagram_revision) if path == HLD else "") + body
     assert_well_formed(storage, path)
     return match.group(1), storage
 
@@ -307,10 +306,10 @@ def document_paths(rev):
     return pages
 
 
-def load_pages(rev):
+def load_pages(rev, diagram_revision=1):
     pages = []
     for path, parent in document_paths(rev):
-        title, storage = build_page(git("show", f"{rev}:{path}", binary=True).decode("utf-8"), path)
+        title, storage = build_page(git("show", f"{rev}:{path}", binary=True).decode("utf-8"), path, diagram_revision)
         digest = hashlib.sha256(storage.encode()).hexdigest()[:16]  # Before the revision goes in.
         pages.append({"path": path, "parent": parent, "title": title, "digest": digest, "storage": storage.replace(REV_PLACEHOLDER, rev)})
     return pages
@@ -395,13 +394,17 @@ class Confluence:
         }
         return self.json("PUT", f"/wiki/api/v2/pages/{existing['id']}", payload)
 
+    def find_attachment(self, page_id, filename):
+        query = urllib.parse.urlencode({"filename": filename, "expand": "version,metadata"})
+        results = self.json("GET", f"/wiki/rest/api/content/{page_id}/child/attachment?{query}")["results"]
+        return results[0] if results else None
+
     def attach(self, page_id, filename, content, content_type):
-        """Upload the file unless the page already holds this content. Returns whether it uploaded."""
+        """Upload the file unless the page already holds this content. Returns the attachment's version and whether it uploaded."""
         comment = f"sync {hashlib.sha256(content).hexdigest()[:16]}"
-        query = urllib.parse.urlencode({"filename": filename})
-        current = self.json("GET", f"/wiki/rest/api/content/{page_id}/child/attachment?{query}")["results"]
-        if current and current[0].get("metadata", {}).get("comment") == comment:
-            return False
+        current = self.find_attachment(page_id, filename)
+        if current and current.get("metadata", {}).get("comment") == comment:
+            return current["version"]["number"], False
         boundary = uuid.uuid4().hex
         body = (
             f'--{boundary}\r\nContent-Disposition: form-data; name="comment"\r\n\r\n{comment}\r\n'
@@ -412,7 +415,7 @@ class Confluence:
         code, data = self.raw("PUT", f"/wiki/rest/api/content/{page_id}/child/attachment", body, headers)
         if code >= 300:
             raise PublishError(f"Attaching {filename} returned {code}: {data.decode(errors='replace')[:800]}")
-        return True
+        return self.find_attachment(page_id, filename)["version"]["number"], True
 
 
 # Commands
@@ -453,13 +456,19 @@ def cmd_check(args):
 
 def cmd_publish(args):
     rev = resolve_rev(args)
-    pages = load_pages(rev)
     client = Confluence(args.site, *load_credentials())
     space_id = client.space_id()
+    # The diagram goes first, because the HLD page must name the version it uploads. A diagram edited
+    # in Confluence also edits the page, so a blocked page keeps its attachment too.
+    diagram_revision = 1
+    if args.overwrite_manual_edits or not edited_outside_publish(client.json("GET", f"/wiki/api/v2/pages/{HLD_PAGE_ID}")):
+        name = posixpath.basename(DIAGRAM)
+        diagram_revision, uploaded = client.attach(HLD_PAGE_ID, name, git("show", f"{rev}:{DIAGRAM}", binary=True), "application/vnd.jgraph.mxfile")
+        print(f"{'Attached' if uploaded else 'Unchanged:'} {name}, version {diagram_revision}, on page {HLD_PAGE_ID}")
+    pages = load_pages(rev, diagram_revision)
     site_url = client.site
     counts = {"created": 0, "updated": 0, "unchanged": 0, "blocked": 0}
     blocked = []
-    hld_id = None
     for page in pages:
         existing = client.find_page(space_id, page["title"])
         message = f"sync {page['digest']} from {rev[:7]}"
@@ -473,12 +482,7 @@ def cmd_publish(args):
         else:
             saved, action = client.update_page(existing, page, message), "updated"
         counts[action] += 1
-        if page["path"] == HLD:
-            hld_id = saved["id"]
         print(f"{action:>9}  {saved['id']}  {page['title'][:80]}", flush=True)
-    name = posixpath.basename(DIAGRAM)
-    uploaded = client.attach(hld_id, name, git("show", f"{rev}:{DIAGRAM}", binary=True), "application/vnd.jgraph.mxfile")
-    print(f"{'Attached' if uploaded else 'Unchanged:'} {name} on page {hld_id}")
     print(f"Done from {rev[:7]}: {counts}. See {site_url}/wiki/spaces/{SPACE_KEY}/pages/{ARCHITECTURE_PARENT}")
     if blocked:
         raise PublishError(
