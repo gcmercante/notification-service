@@ -498,7 +498,7 @@ sequenceDiagram
     participant X as External provider
     participant S as Status-facts topic
     B->>W: Dispatch request (at-least-once)
-    W->>W: Deduplicate on notification/attempt identity; ledger marks attempt in flight [§7.3]
+    W->>W: Deduplicate on notification/attempt identity, then ledger marks attempt in flight [§7.3]
     W->>R: Resolve provider for (tenant, channel)
     W->>P: Send via selected provider (with provider idempotency key if supported)
     P->>X: Provider-specific request
@@ -539,7 +539,7 @@ sequenceDiagram
     CB-->>X: 2xx after the commit
     CB->>PE: Relay publishes validated event (asynchronous, retried)
     PE->>DS: Consume
-    DS->>DB: Correlate provider ref → notification; apply transition rules
+    DS->>DB: Correlate provider ref → notification, then apply transition rules
 ```
 
 **Confirmed (D-20):** providers report status in provider-specific ways. This application exists to receive those updates and publish them to a Kafka topic, from which the status projector updates status. The responsibilities below explain how; they are **Proposed** unless marked otherwise.
