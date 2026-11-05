@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: `.specs/features/platform-foundation/design.md`
-**Status**: Approved (owner, 2026-11-04). Implementation has not started and waits for the owner's go-ahead.
+**Status**: Approved (owner, 2026-11-04). Implementation started 2026-11-05 on `feat/platform-foundation`. T1 complete.
 
 **Before execution:** create an implementation branch from the current one (the current branch holds ADR work). Phase 3 onward needs Docker enabled in this WSL distro.
 
@@ -97,9 +97,9 @@ T15 → T16 → T17 → T18 → T19
 
 **Done when**:
 
-- [ ] Starter files are committed; `.agents`, `.claude`, `.cursor` and `.github` are not in the commit
-- [ ] Gate check passes: Build
-- [ ] Test count: 1 unit and 1 e2e pass
+- [x] Starter files are committed; `.agents`, `.claude`, `.cursor` and `.github` are not in the commit
+- [x] Gate check passes: Build
+- [x] Test count: 1 unit and 1 e2e pass
 
 **Tests**: none
 **Gate**: build
