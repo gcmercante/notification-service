@@ -18,6 +18,11 @@ lerna-debug.log*
 # OS
 .DS_Store
 
+# Duplicate copies of the skills for other agents; .claude/skills is the canonical copy
+/.cursor/
+/.github/skills/
+/.agents/.skill-lock.json.backup
+
 # Tests
 /coverage
 /.nyc_output

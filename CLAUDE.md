@@ -175,3 +175,19 @@ When implementing approved work:
 - Report what was run, the result, and any checks that could not be run. Do not claim validation that has not occurred.
 - Follow TLC Spec-Driven's own validation gates and commit rules whenever that skill governs the task.
 - Do not push, deploy, change production data, or perform other externally visible/destructive operations without explicit authorization for that action.
+
+## Daily Implementation Workflow (Jira and Calendar)
+
+When the owner asks to start the work planned for today:
+
+1. Use the `tlc-spec-driven` skill for every task.
+2. Read today's plan from the owner's Google Calendar and the tasks in the Jira project **Notification Service** (key `NTS`). Work only on what is planned for today.
+3. Keep the Jira board in step with the work, one issue at a time:
+   - When you start an issue, move it to **In Progress**.
+   - When you finish it (gate passed, atomic commit made), move it to **In Review** and start a review subagent for that work.
+   - When the review is done and its findings are handled, move the issue to **Testing** so the owner can test it.
+   - Never move an issue to a later status (Done or beyond). Only the owner does that.
+4. Comment on the issue with what was done, the commit hash and the review result when moving it.
+5. If the Calendar or Jira connection is unavailable, stop and tell the owner. Do not borrow credentials meant for another purpose (for example the Confluence publishing token) and do not guess the plan.
+6. The blast-radius rules still apply: local commits only. Push, deploy and other external actions need explicit go-ahead.
+7. Always work on just one task at a time. Finish it (implement, gate, commit, review, move to Testing) before starting the next one. Never have more than one issue In Progress.

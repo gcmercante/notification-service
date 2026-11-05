@@ -12,12 +12,13 @@
 
 ## Handoff
 
-- **Feature**: planning, all features in `.specs/ROADMAP.md`
-- **Phase / Task**: Specs approved for all ten features. `platform-foundation` design and tasks approved. The owner said not to start implementation.
-- **Completed**: none (no implementation started)
+- **Feature**: `platform-foundation` (`.specs/features/platform-foundation/tasks.md`)
+- **Phase / Task**: Execute. T1 and T2 done, in Jira Testing (NTS-61, NTS-62). T3 is next.
+- **Completed**: T1 (`2423aed`, PR #6), T2 (`3deb7f7`, PR #7, stacked on #6)
 - **In-progress** (file:line): none
-- **Atlassian**: Jira project NTS holds all 75 issues (NTS-5 to NTS-79). Confluence space NTS has parent pages Architecture (917506) and Architecture Decision Records (950273), holding ADR-0001 to ADR-0015, the architecture context and the HLD, published by `scripts/publish_confluence.py`, which `.github/workflows/publish-confluence.yml` runs on each push to `main` that changes these documents, the script or the workflow. The workflow needs the repository secrets `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN`. The HLD's four Mermaid diagrams use the Mermaid app by Narva Software. The `.drawio` file is attached to the HLD page (491522). The page shows the diagram through the draw.io app macro. Each publish uploads the repository's file and sets the macro to the uploaded version. Whether the macro renders without a `.drawio.png` preview, which only the app's editor generates, has not been confirmed on a live page. A publish does not overwrite a page edited in Confluence since its last publish; it fails until the edit is copied to the repository and the workflow is run with `overwrite_manual_edits`.
-- **Next step**: Execute starts at T1 only when the owner says so.
-- **Blockers**: Docker is not enabled in this WSL distro, and integration gates need PostgreSQL, Kafka and Redis.
-- **Uncommitted files**: the starter scaffold (`package.json`, `src/`, `test/` and config files are untracked; T1 commits them)
-- **Branch**: docs/hld-confluence-edits
+- **Atlassian**: Jira project NTS holds all 75 issues (NTS-5 to NTS-79). Sprint 0 is active. Confluence space NTS has parent pages Architecture (917506) and Architecture Decision Records (950273), published by `scripts/publish_confluence.py`, which `.github/workflows/publish-confluence.yml` runs on each push to `main` that changes these documents, the script or the workflow. The workflow needs the repository secrets `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN`. The HLD page (491522) shows the `.drawio` file through the draw.io app macro. A publish does not overwrite a page edited in Confluence since its last publish.
+- **Workflow**: `CLAUDE.md` section "Daily Implementation Workflow" governs Calendar and Jira use: one task at a time, In Progress, then In Review with a review subagent, then Testing. Only the owner moves issues to Done.
+- **Next step**: Merge PR #6 then #7, then start T3 when it is on the day's plan.
+- **Blockers**: none. Docker Desktop works in WSL (checked 2026-11-05: Docker 29.9.2, Compose v5.6.1, ports 5432, 9092 and 6379 free).
+- **Uncommitted files**: none
+- **Branch**: `feat/platform-foundation` (PR #7)

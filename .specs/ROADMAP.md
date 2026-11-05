@@ -28,5 +28,5 @@ Ten features, built in this order. Each has its own spec, design, tasks and Veri
 | Item | Why it matters |
 |---|---|
 | OQ-16 timeouts and unknown outcomes | Specs use an unconfirmed default: never resend, stay `PROCESSING`, let the D-40 alert fire. A refining ADR is needed if you confirm it. |
-| Enable Docker in WSL | Integration gates and FC-04, FC-16, FC-17, FC-20, FC-21 and FC-32 need PostgreSQL, Kafka and Redis. `docker` is not available in this distro today. |
+| Docker in WSL | Integration gates and FC-04, FC-16, FC-17, FC-20, FC-21 and FC-32 need PostgreSQL, Kafka and Redis. Resolved 2026-11-05: Docker Desktop runs in this distro. |
 | International transfer (D-62) | SES region, textbee storage region (not stated by the vendor) and OneSignal all need an assessment before production. |
