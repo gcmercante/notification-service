@@ -13,12 +13,12 @@
 ## Handoff
 
 - **Feature**: `platform-foundation` (`.specs/features/platform-foundation/tasks.md`)
-- **Phase / Task**: Execute. T1 and T2 done, in Jira Testing (NTS-61, NTS-62). T3 is next.
-- **Completed**: T1 (`2423aed`, PR #6), T2 (`3deb7f7`, PR #7, stacked on #6)
+- **Phase / Task**: Execute. T1 and T2 done, tested and closed in Jira (NTS-61, NTS-62). T3 is next.
+- **Completed**: T1 (`2423aed`, PR #6), T2 (`3deb7f7`, PR #7), both merged to `main` and tested 2026-11-05 on a fresh clone of `68a034a` (frozen install, Build gate, app boot returns HTTP 200)
 - **In-progress** (file:line): none
 - **Atlassian**: Jira project NTS holds all 75 issues (NTS-5 to NTS-79). Sprint 0 is active. Confluence space NTS has parent pages Architecture (917506) and Architecture Decision Records (950273), published by `scripts/publish_confluence.py`, which `.github/workflows/publish-confluence.yml` runs on each push to `main` that changes these documents, the script or the workflow. The workflow needs the repository secrets `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN`. The HLD page (491522) shows the `.drawio` file through the draw.io app macro. A publish does not overwrite a page edited in Confluence since its last publish.
 - **Workflow**: `CLAUDE.md` section "Daily Implementation Workflow" governs Calendar and Jira use: one task at a time, In Progress, then In Review with a review subagent, then Testing. Only the owner moves issues to Done.
-- **Next step**: Merge PR #6 then #7, then start T3 when it is on the day's plan.
+- **Next step**: Start T3 when it is on the day's plan. No open PRs.
 - **Blockers**: none. Docker Desktop works in WSL (checked 2026-11-05: Docker 29.9.2, Compose v5.6.1, ports 5432, 9092 and 6379 free).
 - **Uncommitted files**: none
-- **Branch**: `feat/platform-foundation` (PR #7)
+- **Branch**: `main` (work branches are cut from it, one per task)
