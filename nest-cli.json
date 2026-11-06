@@ -17,6 +17,51 @@
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
       }
+    },
+    "email-worker": {
+      "type": "application",
+      "root": "apps/email-worker",
+      "entryFile": "main",
+      "sourceRoot": "apps/email-worker/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/email-worker/tsconfig.app.json"
+      }
+    },
+    "sms-worker": {
+      "type": "application",
+      "root": "apps/sms-worker",
+      "entryFile": "main",
+      "sourceRoot": "apps/sms-worker/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/sms-worker/tsconfig.app.json"
+      }
+    },
+    "push-worker": {
+      "type": "application",
+      "root": "apps/push-worker",
+      "entryFile": "main",
+      "sourceRoot": "apps/push-worker/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/push-worker/tsconfig.app.json"
+      }
+    },
+    "provider-callbacks": {
+      "type": "application",
+      "root": "apps/provider-callbacks",
+      "entryFile": "main",
+      "sourceRoot": "apps/provider-callbacks/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/provider-callbacks/tsconfig.app.json"
+      }
+    },
+    "delivery-status": {
+      "type": "application",
+      "root": "apps/delivery-status",
+      "entryFile": "main",
+      "sourceRoot": "apps/delivery-status/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/delivery-status/tsconfig.app.json"
+      }
     }
   }
 }
