@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: `.specs/features/platform-foundation/design.md`
-**Status**: Approved (owner, 2026-11-04). Implementation started 2026-11-05 on `feat/platform-foundation`. T1 to T4 complete.
+**Status**: Approved (owner, 2026-11-04). Implementation started 2026-11-05 on `feat/platform-foundation`. T1 to T5 complete.
 
 **Before execution:** create an implementation branch from the current one (the current branch holds ADR work). Phase 3 onward needs Docker enabled in this WSL distro.
 
@@ -203,10 +203,10 @@ T15 → T16 → T17 → T18 → T19
 
 **Done when**:
 
-- [ ] Unit tests cover present, missing, and several-missing cases, and assert no value appears in the error
-- [ ] E2E test starts one built app with a missing variable and asserts the exit code and message
-- [ ] Gate check passes: E2E, then Build at phase end
-- [ ] Test count: no reduction from T4
+- [x] Unit tests cover present, missing, and several-missing cases, and assert no value appears in the error
+- [x] E2E test starts one built app with a missing variable and asserts the exit code and message
+- [x] Gate check passes: E2E, then Build at phase end
+- [x] Test count: no reduction from T4
 
 **Tests**: e2e
 **Gate**: e2e

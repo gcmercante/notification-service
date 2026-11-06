@@ -62,6 +62,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/delivery-status/tsconfig.app.json"
       }
+    },
+    "core-config": {
+      "type": "library",
+      "root": "libs/core-config",
+      "entryFile": "index",
+      "sourceRoot": "libs/core-config/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/core-config/tsconfig.lib.json"
+      }
     }
   }
 }
