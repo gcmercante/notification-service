@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: `.specs/features/platform-foundation/design.md`
-**Status**: Approved (owner, 2026-11-04). Implementation started 2026-11-05 on `feat/platform-foundation`. T1 and T2 complete.
+**Status**: Approved (owner, 2026-11-04). Implementation started 2026-11-05 on `feat/platform-foundation`. T1, T2 and T3 complete.
 
 **Before execution:** create an implementation branch from the current one (the current branch holds ADR work). Phase 3 onward needs Docker enabled in this WSL distro.
 
@@ -150,10 +150,10 @@ T15 → T16 → T17 → T18 → T19
 
 **Done when**:
 
-- [ ] `bun run build` produces the app
-- [ ] E2E test asserts liveness returns 200
-- [ ] Gate check passes: E2E
-- [ ] Test count: the 2 starter `Hello World` tests are replaced as the design states; no other removal
+- [x] `bun run build` produces the app
+- [x] E2E test asserts liveness returns 200
+- [x] Gate check passes: E2E
+- [x] Test count: the 2 starter `Hello World` tests are replaced as the design states; no other removal
 
 **Tests**: e2e
 **Gate**: e2e
